@@ -13,6 +13,7 @@ namespace :foreman_systemd do
           set :foreman_systemd_concurrency, 'web=2,worker=1' # default is not set
           set :foreman_systemd_log, -> { shared_path.join('log') }
           set :foreman_systemd_port, 3000 # default is not set
+          set :foreman_systemd_template, '/path/to/template' # default is not set
           set :foreman_systemd_user, 'www-data' # default is not set
     DESC
 
@@ -61,8 +62,9 @@ namespace :foreman_systemd do
         options[:concurrency] = fetch(:foreman_systemd_concurrency) if fetch(:foreman_systemd_concurrency)
         options[:concurrency] = server.properties.foreman_systemd_concurrency if server.properties.foreman_systemd_concurrency
         options[:port] = fetch(:foreman_systemd_port) if fetch(:foreman_systemd_port)
+        options[:template] = fetch(:foreman_systemd_template) if fetch(:foreman_systemd_template)
         options[:user] = fetch(:foreman_systemd_user) if fetch(:foreman_systemd_user)
-
+        
         as "root" do
           execute :foreman, 'export', fetch(:foreman_systemd_export_format), fetch(:foreman_systemd_export_path),
             options.map{ |k, v| "--#{k}='#{v}'" }, fetch(:foreman_systemd_flags)
